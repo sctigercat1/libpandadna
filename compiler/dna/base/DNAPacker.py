@@ -108,18 +108,59 @@ class DNAPacker:
             self.__data = self.__data[struct.calcsize(dataType):]
             return data
 
-    def packColor(self, fieldName, r, g, b, a=None, byteOrder=LITTLE_ENDIAN):
+    def packColor(self, fieldName, r, g, b, a, byteOrder=LITTLE_ENDIAN):
         self.debug('packing... {fieldName}: ({r}, {g}, {b}, {a})'.format(
                     fieldName=fieldName, r=r, g=g, b=b, a=a))
 
         for component in (r, g, b, a):
-            if component is not None:
-                self += struct.pack(byteOrder + UINT8, int(component * 255))
+            self += struct.pack(byteOrder + UINT8, int(component * 255))
 
-    def unpackColor(self, a=True, byteOrder=LITTLE_ENDIAN):
+    def unpackColor(self, byteOrder=LITTLE_ENDIAN):
         color = []
-        for _ in xrange(4 if a else 3):
+        for _ in xrange(4):
             component = struct.unpack_from(byteOrder + UINT8, self.__data)[0]
             component /= 255.0
             color.append(component)
         return tuple(color)
+
+    def packPosition(self, x, y, z, byteOrder=LITTLE_ENDIAN):
+        self.debug('packing... position: ({x}, {y}, {z})'.format(x=x, y=y, z=z))
+
+        for component in (x, y, z):
+            self += struct.pack(byteOrder + INT32, int(component * 100.0))
+
+    def unpackPosition(self, byteOrder=LITTLE_ENDIAN):
+        position = []
+        for _ in xrange(3):
+            component = struct.unpack_from(byteOrder + INT32, self.__data)[0]
+            component /= 100.0
+            position.append(component)
+        return tuple(position)
+
+    def packRotation(self, h, p, r, byteOrder=LITTLE_ENDIAN):
+        self.debug('packing... rotation: ({h}, {p}, {r})'.format(h=h, p=p, r=r))
+
+        for component in (h, p, r):
+            self += struct.pack(byteOrder + INT32, int(component * 100.0))
+
+    def unpackRotation(self, byteOrder=LITTLE_ENDIAN):
+        rotation = []
+        for _ in xrange(3):
+            component = struct.unpack_from(byteOrder + INT32, self.__data)[0]
+            component /= 100.0
+            rotation.append(component)
+        return tuple(rotation)
+
+    def packScale(self, x, y, z, byteOrder=LITTLE_ENDIAN):
+        self.debug('packing... scale: ({x}, {y}, {z})'.format(x=x, y=y, z=z))
+
+        for component in (x, y, z):
+            self += struct.pack(byteOrder + UINT16, int(component * 100.0))
+
+    def unpackScale(self, byteOrder=LITTLE_ENDIAN):
+        scale = []
+        for _ in xrange(3):
+            component = struct.unpack_from(byteOrder + UINT16, self.__data)[0]
+            component /= 100.0
+            scale.append(component)
+        return tuple(scale)
