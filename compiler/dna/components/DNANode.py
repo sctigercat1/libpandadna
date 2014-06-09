@@ -1,5 +1,5 @@
-import DNAGroup
 from dna.base.DNAPacker import *
+from dna.components import DNAGroup
 
 
 class DNANode(DNAGroup.DNAGroup):
@@ -25,12 +25,9 @@ class DNANode(DNAGroup.DNAGroup):
         packer = DNAGroup.DNAGroup.traverse(self, recursive=False, verbose=verbose)
         packer.name = 'DNANode'  # Override the name for debugging.
 
-        for component in self.pos:
-            packer.pack('position', int(component * 100), INT32)
-        for component in self.hpr:
-            packer.pack('rotation', int(component * 100), INT32)
-        for component in self.scale:
-            packer.pack('scale', int(component * 100), UINT16)
+        packer.packPosition(*self.pos)
+        packer.packRotation(*self.hpr)
+        packer.packScale(*self.scale)
 
         if recursive:
             packer += self.traverseChildren(verbose=verbose)
