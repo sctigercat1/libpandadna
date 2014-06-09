@@ -26,11 +26,11 @@ class DNAStorage:
     def storeCatalogCode(self, root, code):
         self.catalogCodes.setdefault(root, []).append(code)
 
-    def storeTexture(self, name, texture):
-        self.textures[name] = texture
+    def storeTexture(self, code, filename):
+        self.textures[code] = filename
 
-    def storeFont(self, font, code):
-        self.fonts[code] = font
+    def storeFont(self, filename, code):
+        self.fonts[code] = filename
 
     def storeNode(self, filename, search, code):
         self.nodes[code] = (filename, search)
@@ -155,7 +155,7 @@ class DNAStorage:
             packer.pack('start point index', startPointIndex, UINT16)
             packer.pack('edge count', len(edges), UINT16)
             for edge in edges:
-                packer.pack('end point', edge.endPoint.index, UINT16)
+                packer.pack('end point index', edge.endPoint.index, UINT16)
                 packer.pack('zone ID', edge.zoneId, UINT16)
 
         # Battle cells...
