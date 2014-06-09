@@ -2,12 +2,12 @@
 // up the base of libpandadna, and are very simple. Their job is to store
 // models, textures, and fonts for later use in sz/town DNA files.
 
-model "path/models/my_model_0" [
+model "path/models/my_model_0.egg" [
 	store_node [ "my_root" "my_code_and_search_path" ]
 	store_node [ "my_root" "my_code" "search_path" ]
 ]
 
-place_model "path/models/my_model_1" [
+place_model "path/models/my_model_1.bam" [
 	store_node [ "prop" "prop_my_model_1" "" ]
 ]
 
@@ -17,6 +17,8 @@ hood_model "path/models/my_model_2" [
 
 store_font [ "font" "my_font_code"
 	     "path/fonts/my_font_0" ]
+store_font [ "font" "my_ttf_code"
+	     "path/fonts/my_font_1.ttf" ]
 
 store_texture [ "texture" "street_floor"
 		"path/maps/floor.jpg" ]
