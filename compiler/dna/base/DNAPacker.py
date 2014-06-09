@@ -70,9 +70,9 @@ class DNAPacker:
 
         # If we're packing a string, add the length header:
         if dataType == SHORT_STRING:
-            self += struct.pack(UINT8, len(value))
+            self += struct.pack(byteOrder + UINT8, len(value))
         elif dataType == LONG_STRING:
-            self += struct.pack(UINT16, len(value))
+            self += struct.pack(byteOrder + UINT16, len(value))
 
         if dataType in (SHORT_STRING, LONG_STRING):
 
@@ -84,6 +84,29 @@ class DNAPacker:
             # Pack the value using struct.pack():
             self += struct.pack(byteOrder + dataType, value)
 
+    def unpack(self, dataType, byteOrder=LITTLE_ENDIAN):
+        # If we're unpacking a string, read the length header:
+        if dataType == SHORT_STRING:
+            length = struct.unpack(byteOrder + UINT8, self.__data)
+            self.__data = self.__data[1:]
+        elif dataType == LONG_STRING:
+            length = struct.unpack(byteOrder + UINT16, self.__data)
+            self.__data = self.__data[2:]
+
+        if dataType in (SHORT_STRING, LONG_STRING):
+
+            # Unpack the data raw:
+            data = self.__data[:length]
+            self.__data = self.__data[length:]
+            return data
+
+        else:
+
+            # Unpack the value using struct.unpack():
+            data = struct.unpack(byteOrder + dataType, self.__data)
+            self.__data = self.__data[len(data):]
+            return data
+
     def packColor(self, fieldName, r, g, b, a=None, byteOrder=LITTLE_ENDIAN):
         self.debug('packing... {fieldName}: ({r}, {g}, {b}, {a})'.format(
                     fieldName=fieldName, r=r, g=g, b=b, a=a))
@@ -91,3 +114,11 @@ class DNAPacker:
         for component in (r, g, b, a):
             if component is not None:
                 self += struct.pack(byteOrder + UINT8, int(component * 255))
+
+    def unpackColor(self, a=True, byteOrder=LITTLE_ENDIAN):
+        color = []
+        for _ in xrange(4 if a else 3):
+            component = struct.unpack(byteOrder + UINT8, self.__data)
+            component /= 255.0
+            color.append(component)
+        return tuple(color)
