@@ -1,6 +1,5 @@
 #!/usr/bin/env python2
 import unittest
-import zlib
 
 import common
 
@@ -14,24 +13,6 @@ class TestCompilerStorage(unittest.TestCase):
             cls.compiled = cls.compiler.compile()
             cls.reader = common.PyReader(cls.compiled)
             cls.reader.readDNAStorage()
-
-    def test_compressed(self):
-        compiler = common.Compiler(self.pdna_data, compress=True)
-        compiled = compiler.compile()
-
-        self.assertEquals(compiled[5], chr(1))
-        header = compiled[:common.HEADER_LENGTH]
-        data = compiled[common.HEADER_LENGTH:]
-        try:
-            decompressed = zlib.decompress(data)
-        except zlib.error:
-            self.fail("Couldn't decompress PDNA file.")
-
-        reader = common.PyReader(header + decompressed)
-        try:
-            reader.readDNAStorage()
-        except:
-            self.fail("Couldn't read decompressed storage.")
 
     def test_catalog_codes(self):
         self.assertEquals(len(self.reader.dnaStore.catalogCodes), 5)
