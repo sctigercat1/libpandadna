@@ -87,10 +87,10 @@ class DNAPacker:
     def unpack(self, dataType, byteOrder=LITTLE_ENDIAN):
         # If we're unpacking a string, read the length header:
         if dataType == SHORT_STRING:
-            length = struct.unpack(byteOrder + UINT8, self.__data)
+            length = struct.unpack_from(byteOrder + UINT8, self.__data)[0]
             self.__data = self.__data[1:]
         elif dataType == LONG_STRING:
-            length = struct.unpack(byteOrder + UINT16, self.__data)
+            length = struct.unpack_from(byteOrder + UINT16, self.__data)[0]
             self.__data = self.__data[2:]
 
         if dataType in (SHORT_STRING, LONG_STRING):
@@ -103,8 +103,9 @@ class DNAPacker:
         else:
 
             # Unpack the value using struct.unpack():
-            data = struct.unpack(byteOrder + dataType, self.__data)
-            self.__data = self.__data[len(data):]
+            dataType = byteOrder + dataType
+            data = struct.unpack_from(dataType, self.__data)[0]
+            self.__data = self.__data[struct.calcsize(dataType):]
             return data
 
     def packColor(self, fieldName, r, g, b, a=None, byteOrder=LITTLE_ENDIAN):
@@ -118,7 +119,7 @@ class DNAPacker:
     def unpackColor(self, a=True, byteOrder=LITTLE_ENDIAN):
         color = []
         for _ in xrange(4 if a else 3):
-            component = struct.unpack(byteOrder + UINT8, self.__data)
+            component = struct.unpack_from(byteOrder + UINT8, self.__data)[0]
             component /= 255.0
             color.append(component)
         return tuple(color)

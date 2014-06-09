@@ -12,7 +12,7 @@ place_model "path/models/my_model_1" [
 ]
 
 hood_model "path/models/my_model_2" [
-	store_node [ "my_root" "hood_my_model_2" "" ]
+	store_node [ "hood" "hood_my_model_2" "" ]
 ]
 
 store_font [ "font" "my_font_code"

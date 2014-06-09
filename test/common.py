@@ -16,6 +16,7 @@ from dna.parser.tokens import *
 from ply import lex
 
 
+HEADER_LENGTH = 7
 HEADER = 'PDNA\n{compressed}\n'
 
 
@@ -50,68 +51,67 @@ class Compiler:
 
 class PyReader:
     def __init__(self, data):
-        self.data = data[len(HEADER):]  # We don't need the header here.
+        self.data = data[HEADER_LENGTH:]  # We don't need the header here.
 
+        self.packer = DNAPacker(name='DNAStorage', packer=self.data)
         self.dnaStore = DNAStorage.DNAStorage()
 
     def readDNAStorage(self):
-        packer = DNAPacker(name='DNAStorage', packer=self.data)
-
         # Catalog codes...
-        rootCount = packer.unpack(UINT16)
+        rootCount = self.packer.unpack(UINT16)
         for _ in xrange(rootCount):
-            root = packer.unpack(SHORT_STRING)
-            codeCount = packer.unpack(UINT8)
+            root = self.packer.unpack(SHORT_STRING)
+            codeCount = self.packer.unpack(UINT8)
             for _ in xrange(codeCount):
-                code = packer.unpack(SHORT_STRING)
+                code = self.packer.unpack(SHORT_STRING)
                 self.dnaStore.storeCatalogCode(root, code)
 
         # Textures...
-        textureCount = packer.unpack(UINT16)
+        textureCount = self.packer.unpack(UINT16)
         for _ in xrange(textureCount):
-            code = packer.unpack(SHORT_STRING)
-            filename = packer.unpack(SHORT_STRING)
+            code = self.packer.unpack(SHORT_STRING)
+            filename = self.packer.unpack(SHORT_STRING)
             self.dnaStore.storeTexture(code, filename)
 
         # Fonts...
-        fontCount = packer.unpack(UINT16)
+        fontCount = self.packer.unpack(UINT16)
         for _ in xrange(fontCount):
-            code = packer.unpack(SHORT_STRING)
-            filename = packer.unpack(SHORT_STRING)
+            code = self.packer.unpack(SHORT_STRING)
+            filename = self.packer.unpack(SHORT_STRING)
             self.dnaStore.storeFont(filename, code)
 
         # Nodes...
-        nodeCount = packer.unpack(UINT16)
+        nodeCount = self.packer.unpack(UINT16)
         for _ in xrange(nodeCount):
-            code = packer.unpack(SHORT_STRING)
-            filename = packer.unpack(SHORT_STRING)
-            search = packer.unpack(SHORT_STRING)
+            code = self.packer.unpack(SHORT_STRING)
+            filename = self.packer.unpack(SHORT_STRING)
+            search = self.packer.unpack(SHORT_STRING)
             self.dnaStore.storeNode(filename, search, code)
 
         # Hood nodes...
-        hoodNodeCount = packer.unpack(UINT16)
+        hoodNodeCount = self.packer.unpack(UINT16)
         for _ in xrange(hoodNodeCount):
-            code = packer.unpack(SHORT_STRING)
-            filename = packer.unpack(SHORT_STRING)
-            search = packer.unpack(SHORT_STRING)
+            code = self.packer.unpack(SHORT_STRING)
+            filename = self.packer.unpack(SHORT_STRING)
+            search = self.packer.unpack(SHORT_STRING)
             self.dnaStore.storeHoodNode(filename, search, code)
 
         # Place nodes...
-        placeNodeCount = packer.unpack(UINT16)
+        placeNodeCount = self.packer.unpack(UINT16)
         for _ in xrange(placeNodeCount):
-            code = packer.unpack(SHORT_STRING)
-            filename = packer.unpack(SHORT_STRING)
-            search = packer.unpack(SHORT_STRING)
+            code = self.packer.unpack(SHORT_STRING)
+            filename = self.packer.unpack(SHORT_STRING)
+            search = self.packer.unpack(SHORT_STRING)
             self.dnaStore.storePlaceNode(filename, search, code)
 
         # Blocks...
-        blockNumberCount = packer.unpack(UINT16)
+        blockNumberCount = self.packer.unpack(UINT16)
         for _ in xrange(blockNumberCount):
-            number = packer.unpack(UINT8)
-            zoneId = packer.unpack(UINT16)
-            title = packer.unpack(SHORT_STRING)
-            article = packer.unpack(SHORT_STRING)
-            buildingType = packer.unpack(SHORT_STRING)
+            number = self.packer.unpack(UINT8)
+            zoneId = self.packer.unpack(UINT16)
+            title = self.packer.unpack(SHORT_STRING)
+            article = self.packer.unpack(SHORT_STRING)
+            buildingType = self.packer.unpack(SHORT_STRING)
             self.dnaStore.storeBlockNumber(number)
             self.dnaStore.storeBlockZone(number, zoneId)
             if title:
@@ -122,39 +122,39 @@ class PyReader:
                 self.dnaStore.storeBlockBuildingType(number, buildingType)
 
         # Suit points...
-        suitPointCount = packer.unpack(UINT16)
+        suitPointCount = self.packer.unpack(UINT16)
         for _ in xrange(suitPointCount):
-            index = packer.unpack(UINT16)
-            type = packer.unpack(UINT8)
+            index = self.packer.unpack(UINT16)
+            type = self.packer.unpack(UINT8)
             pos = []
             for _ in xrange(3):
-                pos.append(packer.unpack(INT32) / 100.0)
+                pos.append(self.packer.unpack(INT32) / 100.0)
             pos = tuple(pos)
-            graphId = packer.unpack(UINT8)
-            landmarkBuildingIndex = packer.unpack(INT8)
+            graphId = self.packer.unpack(UINT8)
+            landmarkBuildingIndex = self.packer.unpack(INT8)
             suitPoint = DNASuitPoint(index, type, pos,
                                      landmarkBuildingIndex=landmarkBuildingIndex)
             suitPoint.setGraphId(graphId)
             self.dnaStore.storeSuitPoint(suitPoint)
 
         # Suit edges...
-        suitEdgeCount = packer.unpack(UINT16)
+        suitEdgeCount = self.packer.unpack(UINT16)
         for _ in xrange(suitEdgeCount):
-            startPointIndex = packer.unpack(UINT16)
-            edgeCount = packer.unpack(UINT16)
+            startPointIndex = self.packer.unpack(UINT16)
+            edgeCount = self.packer.unpack(UINT16)
             for _ in xrange(edgeCount):
-                endPointIndex = packer.unpack(UINT16)
-                zoneId = packer.unpack(UINT16)
+                endPointIndex = self.packer.unpack(UINT16)
+                zoneId = self.packer.unpack(UINT16)
                 self.dnaStore.storeSuitEdge(startPointIndex, endPointIndex, zoneId)
 
         # Battle cells...
-        battleCellCount = packer.unpack(UINT16)
+        battleCellCount = self.packer.unpack(UINT16)
         for _ in xrange(battleCellCount):
-            width = packer.unpack(UINT8)
-            height = packer.unpack(UINT8)
+            width = self.packer.unpack(UINT8)
+            height = self.packer.unpack(UINT8)
             pos = []
             for _ in range(3):
-                pos.append(packer.unpack(INT32) / 100.0)
+                pos.append(self.packer.unpack(INT32) / 100.0)
             pos = tuple(pos)
             cell = DNABattleCell(width, height, pos)
             self.dnaStore.storeBattleCell(cell)
