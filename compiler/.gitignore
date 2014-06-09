@@ -1,2 +1,6 @@
 # PLY
 parsetab.py
+
+# libpandadna
+*.dna
+*.pdna
