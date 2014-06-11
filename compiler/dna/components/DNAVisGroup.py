@@ -1,5 +1,6 @@
-import DNAGroup
 from dna.base.DNAPacker import *
+from dna.components import DNABattleCell
+from dna.components import DNAGroup
 
 
 class DNAVisGroup(DNAGroup.DNAGroup):
@@ -18,11 +19,36 @@ class DNAVisGroup(DNAGroup.DNAGroup):
     def addVisible(self, visible):
         self.visibles.append(visible)
 
-    def addSuitEdge(self, suitEdge):
-        self.suitEdges.append(suitEdge)
+    def addSuitEdge(self, edge):
+        self.suitEdges.append(edge)
 
-    def addBattleCell(self, battleCell):
-        self.battleCells.append(battleCell)
+    def addBattleCell(self, cell):
+        self.battleCells.append(cell)
+
+    def construct(self, dnaStore, packer):
+        DNAGroup.DNAGroup.construct(self, dnaStore, packer)
+
+        edgeCount = packer.unpack(UINT16)
+        for _ in xrange(edgeCount):
+            startPointIndex = packer.unpack(UINT16)
+            endPointIndex = packer.unpack(UINT16)
+            edge = dnaStore.getSuitEdge(startPointIndex, endPointIndex)
+            self.addSuitEdge(edge)
+
+        visibleCount = packer.unpack(UINT16)
+        for _ in xrange(visibleCount):
+            visible = packer.unpack(SHORT_STRING)
+            self.addVisible(visible)
+
+        battleCellCount = packer.unpack(UINT16)
+        for _ in xrange(battleCellCount):
+            width = packer.unpack(UINT8)
+            height = packer.unpack(UINT8)
+            pos = packer.unpackPosition()
+            cell = DNABattleCell(width, height, pos)
+            self.addBattleCell(cell)
+
+        return True # We have children.
 
     def traverse(self, recursive=True, verbose=False):
         packer = DNAGroup.DNAGroup.traverse(self, recursive=False, verbose=verbose)
@@ -43,8 +69,7 @@ class DNAVisGroup(DNAGroup.DNAGroup):
         for cell in self.battleCells:
             packer.pack('width', cell.width, UINT8)
             packer.pack('height', cell.height, UINT8)
-            for component in cell.pos:
-                packer.pack('position', int(component * 100), INT32)
+            packer.packPosition(*cell.pos)
 
         if recursive:
             packer += self.traverseChildren(verbose=verbose)

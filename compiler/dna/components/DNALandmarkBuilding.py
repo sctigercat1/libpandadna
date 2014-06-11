@@ -1,5 +1,5 @@
-import DNANode
 from dna.base.DNAPacker import *
+from dna.components import DNANode
 
 
 class DNALandmarkBuilding(DNANode.DNANode):
@@ -28,6 +28,17 @@ class DNALandmarkBuilding(DNANode.DNANode):
 
     def setBuildingType(self, buildingType):
         self.buildingType = buildingType
+
+    def construct(self, dnaStore, packer):
+        DNANode.DNANode.construct(self, dnaStore, packer)
+
+        self.setCode(packer.unpack(SHORT_STRING))
+        self.setWallColor(packer.unpackColor())
+        self.setTitle(packer.unpack(SHORT_STRING))
+        self.setArticle(packer.unpack(SHORT_STRING))
+        self.setBuildingType(packer.unpack(SHORT_STRING))
+
+        return True  # We have children.
 
     def traverse(self, recursive=True, verbose=False):
         packer = DNANode.DNANode.traverse(self, recursive=False, verbose=verbose)

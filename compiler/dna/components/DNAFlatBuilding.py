@@ -1,5 +1,5 @@
-import DNANode
 from dna.base.DNAPacker import *
+from dna.components import DNANode
 
 
 class DNAFlatBuilding(DNANode.DNANode):
@@ -16,6 +16,14 @@ class DNAFlatBuilding(DNANode.DNANode):
 
     def setHasDoor(self, hasDoor):
         self.hasDoor = True
+
+    def construct(self, dnaStore, packer):
+        DNANode.DNANode.construct(self, dnaStore, packer)
+
+        self.setWidth(packer.unpack(UINT8))
+        self.setHasDoor(packer.unpack(BOOLEAN))
+
+        return True  # We have children.
 
     def traverse(self, recursive=True, verbose=False):
         packer = DNANode.DNANode.traverse(self, recursive=False, verbose=verbose)

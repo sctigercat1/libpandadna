@@ -1,4 +1,4 @@
-import DNANode
+from dna.components import DNANode
 from dna.base.DNAPacker import *
 
 
@@ -38,6 +38,17 @@ class DNAStreet(DNANode.DNANode):
         elif self._setColorCount == 2:
             self.curbColor = color
         self._setColorCount += 1
+
+    def construct(self, dnaStore, packer):
+        DNANode.DNANode.construct(self, dnaStore, packer)
+
+        self.setCode(packer.unpack(SHORT_STRING))
+        for _ in xrange(3):
+            self.setTexture(packer.unpack(SHORT_STRING))
+        for _ in xrange(3):
+            self.setColor(packer.unpackColor())
+
+        return False  # We don't have children.
 
     def traverse(self, recursive=True, verbose=False):
         packer = DNANode.DNANode.traverse(self, recursive=False, verbose=verbose)

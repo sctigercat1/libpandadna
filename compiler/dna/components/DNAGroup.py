@@ -33,21 +33,16 @@ class DNAGroup:
         self.parent = None
         self.visGroup = None
 
+    def construct(self, dnaStore, packer):
+        self.setName(packer.unpack(SHORT_STRING))
+
+        return True  # We have children.
+
     def traverse(self, recursive=True, verbose=False):
         packer = DNAPacker(name='DNAGroup', verbose=verbose)
 
         packer.pack('component code', self.COMPONENT_CODE, UINT8)
         packer.pack('name', self.name, SHORT_STRING)
-
-        parentName = ''
-        if self.parent:
-            parentName = self.parent.name
-        packer.pack('parent name', parentName, SHORT_STRING)
-
-        visGroupName = ''
-        if self.visGroup:
-            visGroupName = self.visGroup.name
-        packer.pack('vis group name', visGroupName, SHORT_STRING)
 
         if recursive:
             packer += self.traverseChildren(verbose=verbose)

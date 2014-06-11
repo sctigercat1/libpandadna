@@ -1,5 +1,5 @@
-import DNALandmarkBuilding
 from dna.base.DNAPacker import *
+from dna.components import DNALandmarkBuilding
 
 
 class DNAAnimBuilding(DNALandmarkBuilding.DNALandmarkBuilding):
@@ -10,8 +10,15 @@ class DNAAnimBuilding(DNALandmarkBuilding.DNALandmarkBuilding):
 
         self.animName = ''
 
-    def setAnim(self, anim):
+    def setAnimName(self, anim):
         self.animName = anim
+
+    def construct(self, dnaStore, packer):
+        DNALandmarkBuilding.DNALandmarkBuilding.construct(self, dnaStore, packer)
+
+        self.setAnimName(packer.unpack(SHORT_STRING))
+
+        return True  # We have children.
 
     def traverse(self, recursive=True, verbose=False):
         packer = DNALandmarkBuilding.DNALandmarkBuilding.traverse(

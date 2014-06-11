@@ -17,6 +17,14 @@ class DNASign(DNANode.DNANode):
     def setColor(self, color):
         self.color = color
 
+    def construct(self, dnaStore, packer):
+        DNANode.DNANode.construct(self, dnaStore, packer)
+
+        self.setCode(packer.unpack(SHORT_STRING))
+        self.setColor(packer.unpackColor())
+
+        return True  # We have children.
+
     def traverse(self, recursive=True, verbose=False):
         packer = DNANode.DNANode.traverse(self, recursive=False, verbose=verbose)
         packer.name = 'DNASign'  # Override the name for debugging.

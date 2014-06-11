@@ -484,7 +484,7 @@ p_dnainteractiveprop_sub.__doc__ = '''\
 dnainteractiveprop_sub : cell_id'''
 
 def p_anim(p):
-    p.parser.parentGroup.setAnim(p[3])
+    p.parser.parentGroup.setAnimName(p[3])
 p_anim.__doc__ = '''\
 anim : ANIM "[" string "]"'''
 

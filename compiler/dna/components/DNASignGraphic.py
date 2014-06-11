@@ -1,5 +1,5 @@
-import DNANode
 from dna.base.DNAPacker import *
+from dna.components import DNANode
 
 
 class DNASignGraphic(DNANode.DNANode):
@@ -26,6 +26,17 @@ class DNASignGraphic(DNANode.DNANode):
 
     def setHeight(self, height):
         self.height = height
+
+    def construct(self, dnaStore, packer):
+        DNANode.DNANode.construct(self, dnaStore, packer)
+
+        self.setCode(packer.unpack(SHORT_STRING))
+        self.setColor(packer.unpackColor())
+        self.setWidth(packer.unpack(INT16) / 100.0)
+        self.setHeight(packer.unpack(INT16) / 100.0)
+        self.bDefaultColor = packer.unpack(BOOLEAN)
+
+        return True
 
     def traverse(self, recursive=True, verbose=False):
         packer = DNANode.DNANode.traverse(self, recursive=False, verbose=verbose)

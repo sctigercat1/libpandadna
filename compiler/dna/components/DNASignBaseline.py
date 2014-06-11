@@ -53,6 +53,23 @@ class DNASignBaseline(DNANode.DNANode):
     def setFlags(self, flags):
         self.flags = flags
 
+    def construct(self, dnaStore, packer):
+        DNANode.DNANode.construct(self, dnaStore, packer)
+
+        self.setCode(packer.unpack(SHORT_STRING))
+        self.setColor(packer.unpackColor())
+        self.setFont(packer.unpack(SHORT_STRING))
+        self.setFlags(packer.unpack(SHORT_STRING))
+        self.setIndent(packer.unpack(INT32) / 100.0)
+        self.setKern(packer.unpack(INT32) / 100.0)
+        self.setWiggle(packer.unpack(INT32) / 100.0)
+        self.setStumble(packer.unpack(INT32) / 100.0)
+        self.setStomp(packer.unpack(INT32) / 100.0)
+        self.setWidth(packer.unpack(INT32) / 100.0)
+        self.setHeight(packer.unpack(INT32) / 100.0)
+
+        return True  # We have children.
+
     def traverse(self, recursive=True, verbose=False):
         packer = DNANode.DNANode.traverse(self, recursive=False, verbose=verbose)
         packer.name = 'DNASignBaseline'  # Override the name for debugging.

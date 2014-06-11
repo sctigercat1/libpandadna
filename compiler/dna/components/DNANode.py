@@ -21,6 +21,15 @@ class DNANode(DNAGroup.DNAGroup):
     def setScale(self, scale):
         self.scale = scale
 
+    def construct(self, dnaStore, packer):
+        DNAGroup.DNAGroup.construct(self, dnaStore, packer)
+
+        self.setPos(packer.unpackPosition())
+        self.setHpr(packer.unpackRotation())
+        self.setScale(packer.unpackScale())
+
+        return True  # We have children.
+
     def traverse(self, recursive=True, verbose=False):
         packer = DNAGroup.DNAGroup.traverse(self, recursive=False, verbose=verbose)
         packer.name = 'DNANode'  # Override the name for debugging.

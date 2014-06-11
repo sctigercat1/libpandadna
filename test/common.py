@@ -53,6 +53,7 @@ class PyReader:
     def __init__(self, data):
         self.data = data[HEADER_LENGTH:]  # We don't need the header here.
 
+        self.topGroup = None
         self.packer = DNAPacker(name='DNAStorage', packer=self.data)
         self.dnaStore = DNAStorage.DNAStorage()
 
@@ -158,3 +159,12 @@ class PyReader:
             pos = tuple(pos)
             cell = DNABattleCell(width, height, pos)
             self.dnaStore.storeBattleCell(cell)
+
+    def readComponent(self, ctor):
+        component = ctor('')
+        hasChildren = component.construct(self.dnaStore, self.packer)
+        if self.topGroup is not None:
+            self.topGroup.add(component)
+            component.setParent(self.topGroup)
+        if hasChildren:
+            self.topGroup = component

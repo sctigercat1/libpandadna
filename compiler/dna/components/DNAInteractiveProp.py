@@ -1,5 +1,5 @@
-import DNAAnimProp
 from dna.base.DNAPacker import *
+from dna.components import DNAAnimProp
 
 
 class DNAInteractiveProp(DNAAnimProp.DNAAnimProp):
@@ -12,6 +12,13 @@ class DNAInteractiveProp(DNAAnimProp.DNAAnimProp):
 
     def setCellId(self, cellId):
         self.cellId = cellId
+
+    def construct(self, dnaStore, packer):
+        DNAAnimProp.DNAAnimProp.construct(self, dnaStore, packer)
+
+        self.setCellId(packer.unpack(INT16))
+
+        return True  # We have children.
 
     def traverse(self, recursive=True, verbose=False):
         packer = DNAAnimProp.DNAAnimProp.traverse(
