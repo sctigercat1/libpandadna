@@ -60,13 +60,13 @@ class DNASignBaseline(DNANode.DNANode):
         self.setColor(packer.unpackColor())
         self.setFont(packer.unpack(SHORT_STRING))
         self.setFlags(packer.unpack(SHORT_STRING))
-        self.setIndent(packer.unpack(INT32) / 100.0)
-        self.setKern(packer.unpack(INT32) / 100.0)
-        self.setWiggle(packer.unpack(INT32) / 100.0)
-        self.setStumble(packer.unpack(INT32) / 100.0)
-        self.setStomp(packer.unpack(INT32) / 100.0)
-        self.setWidth(packer.unpack(INT32) / 100.0)
-        self.setHeight(packer.unpack(INT32) / 100.0)
+        self.setIndent(packer.unpack(FLOAT64))
+        self.setKern(packer.unpack(FLOAT64)
+        self.setWiggle(packer.unpack(FLOAT64))
+        self.setStumble(packer.unpack(FLOAT64)))
+        self.setStomp(packer.unpack(FLOAT64))
+        self.setWidth(packer.unpack(FLOAT64))
+        self.setHeight(packer.unpack(FLOAT64))
 
         return True  # We have children.
 
