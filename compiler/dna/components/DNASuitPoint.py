@@ -15,13 +15,9 @@ class DNASuitPoint:
         self.pointType = pointType
         self.pos = pos
         self.landmarkBuildingIndex = landmarkBuildingIndex
-        self.graphId = 0
 
     def setIndex(self, index):
         self.index = index
-
-    def setGraphId(self, graphId):
-        self.graphId = graphId
 
     def setLandmarkBuildingIndex(self, index):
         self.landmarkBuildingIndex = index
@@ -33,9 +29,8 @@ class DNASuitPoint:
         if isinstance(pointType, int):
             if pointType in DNASuitPoint.ivPointTypeMap:
                 self.pointType = pointType
-                return
         elif isinstance(pointType, str):
             if pointType in DNASuitPoint.pointTypeMap:
                 self.pointType = DNASuitPoint.pointTypeMap[pointType]
-                return
-        raise TypeError('{0} is not a valid DNASuitPointType'.format(pointType))
+        else:
+            raise TypeError('{0} is not a valid DNASuitPointType'.format(pointType))
