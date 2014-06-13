@@ -5,43 +5,47 @@ import zlib
 import common
 
 
-class TestCompilerStorage(unittest.TestCase):
+class TestCompilerPDNA(unittest.TestCase):
     @classmethod
     def setUpClass(cls):
-        # TODO: Write a better DNA file for this test.
-        with open('test_storage.dna', 'r') as f:
-            cls.pdna_data = f.read()
+        with open('test.dna', 'r') as f:
+            cls.data = f.read()
 
     def test_compressed(self):
-        compiler = common.Compiler(self.pdna_data, compress=True)
+        compiler = common.Compiler(self.data, compress=True)
         compiled = compiler.compile()
 
         self.assertEquals(compiled[5], chr(1))
-        header = compiled[:common.HEADER_LENGTH]
         data = compiled[common.HEADER_LENGTH:]
         try:
             decompressed = zlib.decompress(data)
         except zlib.error:
             self.fail("Couldn't decompress the PDNA file.")
 
-        reader = common.PyReader(header + decompressed)
+        reader = common.Reader(decompressed)
         try:
             reader.readDNAStorage()
         except:
             self.fail("Couldn't read compressed storage.")
-        # TODO: Read the remainder.
+        try:
+            reader.readComponents()
+        except:
+            self.fail("Couldn't read the compressed components.")
 
     def test_uncompressed(self):
-        compiler = common.Compiler(self.pdna_data, compress=False)
+        compiler = common.Compiler(self.data, compress=False)
         compiled = compiler.compile()
 
         self.assertEquals(compiled[5], chr(0))
-        reader = common.PyReader(compiled)
+        reader = common.Reader(compiled)
         try:
             reader.readDNAStorage()
         except:
             self.fail("Couldn't read uncompressed storage.")
-        # TODO: Read the remainder.
+        try:
+            reader.readComponents()
+        except:
+            self.fail("Couldn't read the uncompressed components.")
 
 
 if __name__ == '__main__':

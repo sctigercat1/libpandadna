@@ -130,7 +130,7 @@ class DNAPacker:
         self.debug('packing... position: ({x}, {y}, {z})'.format(x=x, y=y, z=z))
 
         for component in (x, y, z):
-            self += struct.pack(byteOrder + INT32, int(component * 100.0))
+            self += struct.pack(byteOrder + INT32, int(component * 100))
 
     def unpackPosition(self, byteOrder=LITTLE_ENDIAN):
         position = []
@@ -144,7 +144,7 @@ class DNAPacker:
         self.debug('packing... rotation: ({h}, {p}, {r})'.format(h=h, p=p, r=r))
 
         for component in (h, p, r):
-            self += struct.pack(byteOrder + INT32, int(component * 100.0))
+            self += struct.pack(byteOrder + INT32, int(component * 100))
 
     def unpackRotation(self, byteOrder=LITTLE_ENDIAN):
         rotation = []
@@ -158,7 +158,7 @@ class DNAPacker:
         self.debug('packing... scale: ({x}, {y}, {z})'.format(x=x, y=y, z=z))
 
         for component in (x, y, z):
-            self += struct.pack(byteOrder + UINT16, int(component * 100.0))
+            self += struct.pack(byteOrder + UINT16, int(component * 100))
 
     def unpackScale(self, byteOrder=LITTLE_ENDIAN):
         scale = []

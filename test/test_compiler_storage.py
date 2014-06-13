@@ -8,10 +8,9 @@ class TestCompilerStorage(unittest.TestCase):
     @classmethod
     def setUpClass(cls):
         with open('test_storage.dna', 'r') as f:
-            cls.pdna_data = f.read()
-            cls.compiler = common.Compiler(cls.pdna_data, compress=False)
+            cls.compiler = common.Compiler(f.read(), compress=False)
             cls.compiled = cls.compiler.compile()
-            cls.reader = common.PyReader(cls.compiled)
+            cls.reader = common.Reader(cls.compiled)
             cls.reader.readDNAStorage()
 
     def test_catalog_codes(self):

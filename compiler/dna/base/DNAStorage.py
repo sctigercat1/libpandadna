@@ -26,16 +26,16 @@ class DNAStorage:
     def storeTexture(self, code, filename):
         self.textures[code] = filename
 
-    def storeFont(self, filename, code):
+    def storeFont(self, code, filename):
         self.fonts[code] = filename
 
-    def storeNode(self, filename, search, code):
+    def storeNode(self, code, filename, search):
         self.nodes[code] = (filename, search)
 
-    def storeHoodNode(self, filename, search, code):
+    def storeHoodNode(self, code, filename, search):
         self.hoodNodes[code] = (filename, search)
 
-    def storePlaceNode(self, filename, search, code):
+    def storePlaceNode(self, code, filename, search):
         self.placeNodes[code] = (filename, search)
 
     def storeBlockNumber(self, blockNumber):
@@ -130,10 +130,8 @@ class DNAStorage:
         packer.pack('suit point count', len(self.suitPoints), UINT16)
         for point in self.suitPoints:
             packer.pack('index', point.index, UINT16)
-            packer.pack('type', point.pointType, UINT8)
-            for component in point.pos:
-                packer.pack('position', int(component * 100), INT32)
-            packer.pack('graph ID', point.graphId, UINT8)
+            packer.pack('point type', point.pointType, UINT8)
+            packer.packPosition(*point.pos)
             packer.pack('landmark building index',
                         point.landmarkBuildingIndex, INT8)
 
@@ -151,7 +149,6 @@ class DNAStorage:
         for cell in self.battleCells:
             packer.pack('width', cell.width, UINT8)
             packer.pack('height', cell.height, UINT8)
-            for component in cell.pos:
-                packer.pack('position', int(component * 100), INT32)
+            packer.packPosition(*cell.pos)
 
         return packer
