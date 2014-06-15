@@ -10,6 +10,9 @@ class DNAStorage:
         self.nodes = {}               # {code: (filename, search)}
         self.hoodNodes = {}           # {code: (filename, search)}
         self.placeNodes = {}          # {code: (filename, search)}
+        self.DNAGroups = []           # [DNAGroup]
+        self.DNANodes = []            # [DNANode]
+        self.DNAVisGroups = []        # [DNAVisGroup]
         self.blockNumbers = []        # [blockNumber]
         self.blockZones = {}          # {blockNumber: zoneId}
         self.blockTitles = {}         # {blockNumber: title}
@@ -69,6 +72,9 @@ class DNAStorage:
 
     def getBlock(self, name):
         return name[2:name.find(':')]
+
+    def getFont(self, code):
+        return loader.loadFont(self.fonts.get(code))
 
     def dump(self, verbose=False):
         packer = DNAPacker(name='DNAStorage', verbose=verbose)
