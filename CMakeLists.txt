@@ -11,6 +11,8 @@ if(NOT PYTHONINTERP_FOUND)
     message(FATAL_ERROR "Python interpreter not found.")
 endif()
 
+find_package(Eigen3 REQUIRED)
+
 if(PYTHON_VERSION_MAJOR EQUAL 2)
     set(PYTHON2_EXECUTABLE "${PYTHON_EXECUTABLE}")
 else()
@@ -98,6 +100,7 @@ include_directories(src/suit)
 include_directories(src/components)
 include_directories(${PANDA_DIR}/include)
 include_directories(${PYTHON_INCLUDE_DIR})
+include_directories(${EIGEN3_INCLUDE_DIR})
 link_directories(${PANDA_DIR}/lib)
 
 set(LIBPFX "")
